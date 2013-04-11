@@ -9,8 +9,139 @@
 #include <error.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include <ctype.h>
+#include <string.h>
+
+///////////////////// END LIBRARIES AND HEADERS //////////////////////
+/*----------------------------------------------------------------- */
+///////////////////// UTILITY FUNCTIONS //////////////////////////////
+
+
+//Check if special token
+bool special_token(char curInput)
+{
+	// check against ; | && || ( ) < >
+	switch(curInput)
+	{
+		case ';':
+		case '|':
+		case '&':
+		case '(':
+		case ')':
+		case '<':
+		case '>':
+			return true;
+		default: break;
+	}
+	return false;
+}
+
+//Check if allowed regular token
+bool ok_token(char curInput)
+{
+	// check against ! % + , - . / : @ ^ _
+	switch(curInput)
+	{
+		case '!':
+		case '%':
+		case '+':
+		case ',':
+		case '-':
+		case '.':
+		case '/':
+		case ':':
+		case '@':
+		case '^':
+		case '_':
+			return true;
+		default: break;
+	}
+	return false;
+}
+
+//Check for validity of character
+bool valid_check(char curInput)
+{
+    // check if its valid
+	return ((isalnum((unsigned char)curInput) != 0) || ok_token(curInput) || special_token(curInput) || (isspace((unsigned char) curInput) != 0))
+}
+
+/////////////////// END OF UTILITY FUNCTIONS //////////////////////////
+/*------------------------------------------------------------------ */
+/////////////////// COMMAND_STREAM STRUCT /////////////////////////////
+
+
+struct command_stream
+{
+  // How and where to get the next byte
+  int (*getbyte) (void *); 
+  void *arg;
+  
+  // A stored char byte, if it was read but not used
+  int next_char;
+  
+  int line_number;
+  
+  // For storing the token strings
+  char *next_token_string;
+  enum token_type next_token;
+  char *current_token_string;
+  enum token_type current_token;
+  // Every realloc, this must be updated
+  int max_token_length;
+};
+
+enum token_type
+  {
+    WORD,           // ASCII, digit, or: ! % + , - . / : @ ^ _
+    D_AND,          // &&
+    D_OR,           // ||
+    PIPE,           // |
+    LEFT_PARAN,     // (
+    RIGHT_PARAN,    // )
+    LESS,           // <
+    GREATER,        // >
+    NEWLINE,        // \n
+    SEMICOLON,      // ;
+    END
+  };
+
+  //////////////////// END OF COMMAND_STREAM STRUCT ///////////////////////
+/* ------------------------------------------------------------------- */
+///////////////////////////PARSING FUNCTIONS/////////////////////////////
+
+
+//Retrieve the next valid character
+int get_next_char(command_stream_t cmd_stream);
+
+//Put back an unused input
+void unget_char(int unwanted, command_stream_t cmd_stream);
+
+//Check if the character is a valid part of a WORD
+int is_valid_word_char(int character);
+
+// Tokenization, the lexer
+enum token_type read_next_token(command_stream_t cmd_stream);
+
+// Parsing complete command
+command_t complete_command (command_stream_t s);
+
+// Parses and_or clause
+command_t and_or (command_stream_t s);
+
+//Parses pipeline
+command_t pipeline (command_stream_t s);
+
+//Parses command
+command_t command_parse (command_stream_t s);
+
+//Parses subshell
+command_t subshell (command_stream_t s);
+
+//Parses simple command
+command_t simple_command (command_stream_t s);
+
+/*----------------------------------------------------------------------*/
 
 // Increase size allocation by 50 bytes
 void command_stream_reallocate(command_stream_t cmd_stream)

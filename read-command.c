@@ -12,6 +12,64 @@
 #include <string.h>
 #include <ctype.h>
 
+///////////////////////// UTILITY FUNCTIONS /////////////////////////////
+
+//Check if special token
+int special_token(char curInput) //BOOL
+{
+	// check against ; | && || ( ) < >
+	switch(curInput)
+	{
+		case ';':
+		case '|':
+		case '&':
+		case '(':
+		case ')':
+		case '<':
+		case '>':
+			return 1;
+		default: break;
+	}
+	return true;
+}
+
+//Check if allowed regular token
+int ok_token(char curInput) //BOOL
+{
+	// check against ! % + , - . / : @ ^ _
+	switch(curInput)
+	{
+		case '!':
+		case '%':
+		case '+':
+		case ',':
+		case '-':
+		case '.':
+		case '/':
+		case ':':
+		case '@':
+		case '^':
+		case '_':
+			return 1;
+		default: break;
+	}
+	return 0;
+}
+
+//Check for validity of character
+int valid_check(char curInput) //BOOL
+{
+    // check if its valid
+	if((isalnum((unsigned char)curInput) != 0) || (ok_token(curInput) == 1) || (special_token(curInput) == 1) || (isspace((unsigned char) curInput) != 0))
+		return 1;
+	else
+		return 0;
+}
+
+//////////////////// END OF UTILITY FUNCTIONS     ///////////////////////
+/*---------------------------------------------------------------------*/
+//////////////////// PARSING FUNCTIONS //////////////////////////////////
+
 //////////////////// END OF COMMAND_STREAM STRUCT ///////////////////////
 /* ------------------------------------------------------------------- */
 ///////////////////////////PARSING FUNCTIONS/////////////////////////////
@@ -48,7 +106,7 @@ command_t simple_command (command_stream_t s);
 
 /*---------------------------------------------------------------------------*/
   
-  /*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 
 // Increase size allocation by 50 bytes
 void command_stream_reallocate(command_stream_t cmd_stream)

@@ -10,6 +10,21 @@ enum command_type
     SUBSHELL_COMMAND,    // ( A )
   };
   
+enum token_type
+  {
+    WORD,           // ASCII, digit, or: ! % + , - . / : @ ^ _
+    D_AND,          // &&
+    D_OR,           // ||
+    PIPE,           // |
+    LEFT_PARAN,     // (
+    RIGHT_PARAN,    // )
+    LESS,           // <
+    GREATER,        // >
+    NEWLINE,        // \n
+    SEMICOLON,      // ;
+    END
+  };
+
 // Data associated with a command.
 struct command
 {
@@ -33,4 +48,24 @@ struct command
     // for SUBSHELL_COMMAND:
     struct command *subshell_command;
   } u;
+};
+
+struct command_stream
+{
+  // How and where to get the next byte
+  int (*getbyte) (void *); 
+  void *arg;
+  
+  // A stored char byte, if it was read but not used
+  int next_char;
+  
+  int line_number;
+  
+  // For storing the token strings
+  char *next_token_string;
+  enum token_type next_token;
+  char *current_token_string;
+  enum token_type current_token;
+  // Every realloc, this must be updated
+  int max_token_length;
 };

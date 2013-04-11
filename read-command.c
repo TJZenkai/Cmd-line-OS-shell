@@ -12,6 +12,44 @@
 #include <string.h>
 #include <ctype.h>
 
+//////////////////// END OF COMMAND_STREAM STRUCT ///////////////////////
+/* ------------------------------------------------------------------- */
+///////////////////////////PARSING FUNCTIONS/////////////////////////////
+
+//Retrieve the next valid character
+int get_next_char(command_stream_t cmd_stream);
+
+//Put back an unused input
+void unget_char(int unwanted, command_stream_t cmd_stream);
+
+//Check if the character is a valid part of a WORD
+int is_valid_word_char(int character);
+
+// Tokenization, the lexer
+enum token_type read_next_token(command_stream_t cmd_stream);
+
+// Parsing complete command
+command_t complete_command (command_stream_t s);
+
+// Parses and_or clause
+command_t and_or (command_stream_t s);
+
+//Parses pipeline
+command_t pipeline (command_stream_t s);
+
+//Parses command
+command_t command_parse (command_stream_t s);
+
+//Parses subshell
+command_t subshell (command_stream_t s);
+
+//Parses simple command
+command_t simple_command (command_stream_t s);
+
+/*---------------------------------------------------------------------------*/
+  
+  /*---------------------------------------------------------------------------*/
+
 // Increase size allocation by 50 bytes
 void command_stream_reallocate(command_stream_t cmd_stream)
 {

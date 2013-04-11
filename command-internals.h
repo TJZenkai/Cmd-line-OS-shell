@@ -9,21 +9,6 @@ enum command_type
     SIMPLE_COMMAND,      // a simple command
     SUBSHELL_COMMAND,    // ( A )
   };
-  
-enum token_type
-  {
-    WORD,           // ASCII, digit, or: ! % + , - . / : @ ^ _
-    D_AND,          // &&
-    D_OR,           // ||
-    PIPE,           // |
-    LEFT_PARAN,     // (
-    RIGHT_PARAN,    // )
-    LESS,           // <
-    GREATER,        // >
-    NEWLINE,        // \n
-    SEMICOLON,      // ;
-    END
-  };
 
 // Data associated with a command.
 struct command
@@ -49,6 +34,21 @@ struct command
     struct command *subshell_command;
   } u;
 };
+
+enum token_type
+  {
+    WORD,           // ASCII, digit, or: ! % + , - . / : @ ^ _
+    D_AND,          // &&
+    D_OR,           // ||
+    PIPE,           // |
+    LEFT_PARAN,     // (
+    RIGHT_PARAN,    // )
+    LESS,           // <
+    GREATER,        // >
+    NEWLINE,        // \n
+    SEMICOLON,      // ;
+    END
+  };
 
 struct command_stream
 {
